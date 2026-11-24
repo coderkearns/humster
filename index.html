@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f3ed">
+  <meta name="description" content="Humster — build a collection, gather your teams, and place each work in time.">
+  <title>Humster — a game of things in time</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main>
+    <section id="library-view" class="view">
+      <h1>Library</h1>
+
+      <div class="library-layout">
+        <section class="panel add-panel" aria-labelledby="add-heading">
+          <h2 id="add-heading">Add a work</h2>
+          <form id="work-form" class="work-form">
+            <input type="hidden" id="work-id">
+            <label class="field"><span>Work title</span><input id="work-title" name="title" placeholder="e.g. The Great Wave off Kanagawa" required maxlength="120"></label>
+            <div class="field-row">
+              <label class="field"><span>Artist / creator</span><input id="work-artist" name="artist" placeholder="e.g. Hokusai" required maxlength="100"></label>
+              <label class="field year-field"><span>Year</span><input id="work-year" name="year" type="number" inputmode="numeric" placeholder="1831" min="-9999" max="9999" required></label>
+            </div>
+            <label class="field"><span>Kind of work</span><select id="work-kind" name="kind"><option value="Art">Art</option><option value="Literature">Literature</option><option value="Music">Music</option></select></label>
+            <label class="field media-input" id="image-input"><span>Artwork file</span><input id="work-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small class="field-help">PNG, JPEG, WebP, or GIF. Up to 30 MB.</small></label>
+            <label class="field media-input hidden" id="audio-input"><span>Music file</span><input id="work-audio" type="file" accept="audio/mpeg,audio/mp3,audio/ogg,audio/wav,audio/mp4,audio/aac"><small class="field-help">MP3, WAV, OGG, or M4A. Up to 30 MB.</small></label>
+            <label class="field media-input hidden" id="text-input"><span>Literature excerpt</span><textarea id="work-text" rows="5" maxlength="50000" placeholder="Paste the passage players will read during the turn."></textarea><small class="field-help">Up to 50,000 characters. The excerpt is included in the collection.</small></label>
+            <div id="media-current" class="media-current hidden"></div>
+            <div class="form-actions"><button class="button button-dark" type="submit" id="save-work">Add to library <span aria-hidden="true">↗</span></button><button class="text-button hidden" id="cancel-edit" type="button">Cancel edit</button></div>
+          </form>
+          <button class="button button-dark start-setup" id="open-game" type="button">Start game</button>
+        </section>
+
+        <section class="panel collection-panel" aria-labelledby="collection-heading">
+          <div class="collection-top"><h2 id="collection-heading">Works <span id="work-count-label">(0)</span></h2><div class="collection-tools"><label class="button button-light upload-button">Open .humster<input id="library-upload" type="file" accept=".humster,.zip,application/zip" hidden></label><button class="button button-light" id="export-library" type="button">Save .humster</button><button id="clear-library" class="text-button danger-text" type="button">Clear</button></div></div>
+          <p class="library-empty" id="library-empty">Add a work or open a .humster file.</p>
+          <div class="work-list" id="work-list" aria-live="polite"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="game-view" class="view hidden">
+      <div class="game-shell">
+        <button class="text-button back-library" id="back-library" type="button">← Library</button>
+        <h1 id="game-heading">Game setup</h1>
+        <div id="game-setup" class="game-setup">
+          <section class="panel setup-library"><h2>Library file</h2><label class="drop-zone" id="game-drop-zone"><input id="game-upload" type="file" accept=".humster,.zip,application/zip"><strong id="game-file-name">Choose a .humster file</strong><small id="game-file-meta">or drop it here</small></label></section>
+          <section class="panel setup-teams"><div class="setup-title-row"><h2>Teams</h2><span class="team-count" id="team-count">2 teams</span></div><div id="team-fields" class="team-fields"></div><button class="add-team" id="add-team" type="button">+ Add team</button><div class="target-setting"><label for="target-count">Works needed to win</label><div class="stepper"><button type="button" data-step="-1" aria-label="Decrease winning timeline">−</button><input id="target-count" type="number" min="2" max="30" value="10"><button type="button" data-step="1" aria-label="Increase winning timeline">+</button></div></div><button id="start-game" class="button button-dark start-button" type="button" disabled>Start game</button><p class="setup-error" id="setup-error" role="status"></p></section>
+        </div>
+
+        <div id="active-game" class="active-game hidden">
+          <div class="round-strip"><span>Round <b id="round-number">01</b> · <span id="turn-label"></span></span><div class="round-progress" id="round-progress"></div></div>
+          <div class="game-grid">
+            <section class="draw-card" id="draw-card"><div id="draw-media" class="draw-media"></div><div class="draw-content"><h2 id="draw-title"></h2><p id="draw-artist"></p><p id="draw-status"></p></div></section>
+            <section class="timeline-panel"><div class="timeline-heading"><h2 id="timeline-team-name">Team name</h2><span id="timeline-score"></span></div><div id="timeline-slots" class="timeline-slots"></div></section>
+          </div>
+          <div class="game-controls"><button class="text-button" id="quit-game" type="button">← End game</button><span id="game-feedback" class="game-feedback" role="status" aria-live="polite"></span><button class="button button-dark hidden" id="next-turn" type="button">Next team <span aria-hidden="true">→</span></button></div>
+        </div>
+
+        <div id="results-view" class="results-view hidden">
+          <p class="results-intro" id="results-intro"></p>
+          <div class="podium" id="podium"></div><button class="button button-dark" id="show-timelines" type="button">See every timeline <span aria-hidden="true">↗</span></button>
+          <div class="final-timelines hidden" id="final-timelines"></div><button id="play-again" class="text-button hidden" type="button">Start another game</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

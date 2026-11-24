@@ -1,0 +1,9 @@
+{
+  "name": "humster",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check app.js && node --check src/archive.js && node --check src/game-engine.js && node --check src/library-storage.js && node --check src/works.js",
+    "test": "node --test"
+  }
+}
