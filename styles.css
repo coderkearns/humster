@@ -23,6 +23,7 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 20px
 #game-heading:empty { display: none; }
 .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; }
 .library-layout { display: grid; grid-template-columns: minmax(270px, 330px) minmax(0, 1fr); gap: 32px; align-items: start; }
+.library-sidebar { display: grid; gap: 16px; }
 .add-panel, .setup-library, .setup-teams { padding: 28px; }
 .work-form, .field { display: flex; flex-direction: column; }
 .work-form { gap: 14px; }
@@ -43,7 +44,7 @@ h2 { font-size: 18px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 20px
 .button-light:hover { background: #f3f4f0; }
 .text-button, .add-team, .icon-button, .remove-team { border: 0; background: transparent; color: var(--muted); }
 .text-button:hover, .add-team:hover, .icon-button:hover, .remove-team:hover { color: var(--ink); }
-.start-setup { margin-top: 28px; width: 100%; }
+.start-setup { width: 100%; }
 .collection-panel { min-width: 0; padding: 28px; }
 .collection-top, .setup-title-row, .timeline-heading, .target-setting { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .collection-top { margin-bottom: 26px; }
