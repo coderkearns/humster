@@ -25,3 +25,20 @@ test('a .humster ZIP round-trips details and bundled media', async () => {
   assert.deepEqual([...new Uint8Array(await imported[1].media.blob.arrayBuffer())], [1, 2, 3, 4]);
   assert.equal(imported[2].media.content, 'Call me Ishmael.');
 });
+test('a collection with a missing media file keeps its work and marks media unavailable', async () => {
+  const archive = await createCollection(works.slice(0, 1));
+  const bytes = new Uint8Array(await archive.arrayBuffer());
+  const original = new TextEncoder().encode('media/work-0001.png');
+  const replacement = new TextEncoder().encode('media/miss-0001.png');
+  for (let offset = 0; offset <= bytes.length - original.length; offset += 1) {
+    if (!original.every((byte, index) => bytes[offset + index] === byte)) continue;
+    const localHeader = offset >= 30 && new DataView(bytes.buffer).getUint32(offset - 30, true) === 0x04034b50;
+    const centralHeader = offset >= 46 && new DataView(bytes.buffer).getUint32(offset - 46, true) === 0x02014b50;
+    if (localHeader || centralHeader) bytes.set(replacement, offset);
+  }
+
+  const imported = await readCollection(new Blob([bytes]));
+  assert.equal(imported.length, 1);
+  assert.equal(imported[0].title, 'The Great Wave');
+  assert.equal(imported[0].media, null);
+});

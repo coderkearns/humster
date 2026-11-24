@@ -82,7 +82,7 @@ function renderLibrary() {
   list.replaceChildren();
   for (const work of [...state.libraryWorks].sort((a, b) => a.year - b.year || a.title.localeCompare(b.title))) {
     const card = document.createElement('article');
-    card.className = 'work-card';
+    card.className = `work-card${work.media ? '' : ' missing-media'}`;
     card.append(createWorkMedia(work, libraryMediaUrls));
     const details = document.createElement('div');
     details.className = 'work-details';

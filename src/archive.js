@@ -176,14 +176,15 @@ export async function readCollection(file) {
       media = { type: 'text', name: input.media.name, content: input.media.content };
     } else if (['image', 'audio'].includes(input.media?.type) && typeof input.media.path === 'string') {
       const entry = entries.get(input.media.path);
-      if (!entry) throw new Error(`Media file missing for “${input.title || 'a work'}”.`);
-      const data = await readEntry(bytes, view, entry);
-      media = {
-        type: input.media.type,
-        name: input.media.name,
-        mime: input.media.mime,
-        blob: new Blob([data], { type: input.media.mime || 'application/octet-stream' }),
-      };
+      if (entry) {
+        const data = await readEntry(bytes, view, entry);
+        media = {
+          type: input.media.type,
+          name: input.media.name,
+          mime: input.media.mime,
+          blob: new Blob([data], { type: input.media.mime || 'application/octet-stream' }),
+        };
+      }
     }
     const work = normalizeWork({ ...input, media });
     if (work) works.push(work);
